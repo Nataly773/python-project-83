@@ -4,7 +4,9 @@ version = "0.1.0"
 dependencies = [
     "flask>=3.1.1",
     "gunicorn>=23.0.0",
-    "python-dotenv>=1.1.1"
+    "python-dotenv>=1.1.1",
+    "psycopg2-binary>=2.9.9",
+    "validators>=0.28.0"
 ]
 requires-python = ">=3.12"
 
