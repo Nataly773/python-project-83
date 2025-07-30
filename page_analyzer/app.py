@@ -117,7 +117,7 @@ def run_check(id):
                     VALUES (%s, %s, %s, %s, %s, %s)
                 """, (id, status_code, h1_text, title_text, description, datetime.datetime.now()))
 
-                flash('Проверка успешно выполнена', 'success')
+                flash('Страница успешно проверена', 'success')
 
             except requests.RequestException:
                 flash('Произошла ошибка при проверке', 'danger')
