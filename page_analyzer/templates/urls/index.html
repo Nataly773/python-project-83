@@ -19,6 +19,23 @@
         </tr>
       {% endfor %}
     </tbody>
-  </table>
+  </table><thead>
+  <tr>
+    <th>ID</th>
+    <th>Имя</th>
+    <th>Дата создания</th>
+    <th>Последняя проверка</th>
+  </tr>
+</thead>
+<tbody>
+  {% for id, name, created_at, last_check in urls %}
+    <tr>
+      <td>{{ id }}</td>
+      <td><a href="{{ url_for('show_url', id=id) }}">{{ name }}</a></td>
+      <td>{{ created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td>{{ last_check.strftime('%Y-%m-%d %H:%M') if last_check else '' }}</td>
+    </tr>
+  {% endfor %}
+</tbody>
 </div>
 {% endblock %}
