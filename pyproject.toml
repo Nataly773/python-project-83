@@ -3,7 +3,8 @@ name = "hexlet-code"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-dependencies = ["flask",
+dependencies = [
+ "flask",
  "gunicorn", 
  "python-dotenv"
  ]
