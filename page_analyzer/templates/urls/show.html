@@ -8,7 +8,7 @@
     <tr><th>Дата создания</th><td>{{ url[2].strftime('%Y-%m-%d %H:%M') }}</td></tr>
   </table>
   <form method="post" action="{{ url_for('run_check', id=url[0]) }}">
-  <button type="submit" class="btn btn-primary mb-3">Проверить</button>
+  <button type="submit" class="btn btn-primary mb-3">Запустить проверку</button>
 </form>
   <h2>Проверки</h2>
 <table class="table" data-test="checks">
