@@ -1,15 +1,17 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="container mt-4">
+
   {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div>
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+    {% if messages %}
+      <div>
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
   <h1>Сайт: {{ url[1] }}</h1>
   <table class="table" data-test="url">
     <tr><th>ID</th><td>{{ url[0] }}</td></tr>
@@ -17,33 +19,33 @@
     <tr><th>Дата создания</th><td>{{ url[2].strftime('%Y-%m-%d %H:%M') }}</td></tr>
   </table>
   <form method="post" action="{{ url_for('run_check', id=url[0]) }}">
-  <button type="submit" class="btn btn-primary mb-3">Запустить проверку</button>
-</form>
+    <button type="submit" class="btn btn-primary mb-3">Запустить проверку</button>
+  </form>
   <h2>Проверки</h2>
-<table class="table" data-test="checks">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Код ответа</th>
-      <th>title</th>
-      <th>h1</th>
-      <th>description</th>
-      <th>Дата</th>
-    </tr>
-  </thead>
+  <table class="table" data-test="checks">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Код ответа</th>
+        <th>h1</th>
+        <th>title</th>
+        <th>description</th>
+        <th>Дата</th>
+      </tr>
+    </thead>
 
-  <tbody>
-    {% for check in checks %}
-    <tr>
-      <td>{{ check[0] }}</td>
-      <td>{{ check[2] or '' }}</td>
-      <td>{{ check[4] or '' }}</td>
-      <td>{{ check[3] or '' }}</td>
-      <td>{{ check[5] or '' }}</td>
-      <td>{{ check[6].strftime('%Y-%m-%d %H:%M') }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <tbody>
+      {% for check in checks %}
+      <tr>
+        <td>{{ check[0] }}</td>
+        <td>{{ check[2] or '' }}</td>
+        <td>{{ check[4] or '' }}</td>
+        <td>{{ check[3] or '' }}</td>
+        <td>{{ check[5] or '' }}</td>
+        <td>{{ check[6].strftime('%Y-%m-%d %H:%M') }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}
