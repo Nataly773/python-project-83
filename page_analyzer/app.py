@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from urllib.parse import urlparse
 import validators
 from flask import abort
+from bs4 import BeautifulSoup
 
 load_dotenv()
 
@@ -53,7 +54,9 @@ def list_urls():
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT urls.id, urls.name, urls.created_at, MAX(url_checks.created_at) AS last_check
+                SELECT urls.id, urls.name, urls.created_at,
+                       MAX(url_checks.created_at) AS last_check,
+                       MAX(url_checks.status_code) AS status_code
                 FROM urls
                 LEFT JOIN url_checks ON urls.id = url_checks.url_id
                 GROUP BY urls.id
@@ -81,19 +84,42 @@ def show_url(id):
     return render_template('urls/show.html', url=url, checks=checks)
 
 
+import requests
+
 @app.post('/urls/<int:id>/checks')
 def run_check(id):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id FROM urls WHERE id = %s", (id,))
-            url = cur.fetchone()
-            if not url:
+            # Проверка существования URL
+            cur.execute("SELECT name FROM urls WHERE id = %s", (id,))
+            row = cur.fetchone()
+            if not row:
                 abort(404)
 
-            cur.execute(
-                "INSERT INTO url_checks (url_id, created_at) VALUES (%s, %s)",
-                (id, datetime.datetime.now())
-            )
+            url = row[0]
+            try:
+                response = requests.get(url, timeout=5)
+                response.raise_for_status()
 
-    flash('Проверка успешно добавлена', 'success')
+                status_code = response.status_code
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                h1 = soup.find('h1')
+                title = soup.find('title')
+                meta = soup.find('meta', attrs={'name': 'description'})
+
+                h1_text = h1.get_text(strip=True) if h1 else None
+                title_text = title.get_text(strip=True) if title else None
+                description = meta['content'].strip() if meta and meta.get('content') else None
+
+                cur.execute("""
+                    INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (id, status_code, h1_text, title_text, description, datetime.datetime.now()))
+
+                flash('Проверка успешно выполнена', 'success')
+
+            except requests.RequestException:
+                flash('Произошла ошибка при проверке', 'danger')
+
     return redirect(url_for('show_url', id=id))

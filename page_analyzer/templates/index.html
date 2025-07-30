@@ -1,40 +1,16 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Анализатор страниц</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends 'layout.html' %}
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-  <div class="container mt-5">
-    <h1 class="text-center mb-4">Анализатор страниц</h1>
-
-    <!-- Форма ввода URL -->
-    <form class="row g-3 justify-content-center" method="post" action="{{ url_for('add_url') }}">
-      <div class="col-auto">
-        <input type="url" class="form-control" name="url" placeholder="https://example.com" required>
+{% block content %}
+  <div class="container-lg mt-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-10 col-lg-8 mx-auto">
+        <h1 class="display-3 mb-5 text-center">Анализатор страниц</h1>
+        <p class="lead text-center">Бесплатно проверяйте сайты на SEO-пригодность</p>
+        <form method="post" action="{{ url_for('add_url') }}" class="d-flex justify-content-center">
+          <input type="text" name="url" class="form-control form-control-lg" placeholder="https://www.example.com">
+          <input type="submit" value="Проверить" class="btn btn-primary btn-lg ms-3 px-5 text-uppercase">
+        </form>
       </div>
-      <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Проверить</button>
-      </div>
-    </form>
-
-    <!-- Flash-сообщения -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="row justify-content-center">
-          <div class="col-md-6">
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }} mt-4" role="alert">
-                {{ message }}
-              </div>
-            {% endfor %}
-          </div>
-        </div>
-      {% endif %}
-    {% endwith %}
-
+    </div>
   </div>
+{% endblock %}
