@@ -1,5 +1,5 @@
 install:
-	pip install -r requirements.txt
+	uv install
 
 dev:
 	flask --debug --app page_analyzer:app run
