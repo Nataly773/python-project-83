@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 import validators
 from flask import abort
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 
 load_dotenv()
 
@@ -20,17 +21,23 @@ def get_connection():
     return psycopg2.connect(DATABASE_URL)
 
 
+def is_valid_url(url):
+    parsed = urlparse(url)
+    return all([parsed.scheme in ('http', 'https'), parsed.netloc])
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
 @app.post('/urls')
 def add_url():
     url = request.form.get('url', '').strip()
-    if not validators.url(url):
+    
+    if not is_valid_url(url):
         flash('Некорректный URL', 'danger')
-        return render_template('index.html'), 422
+        return redirect(url_for('index'))
+
 
     normalized = urlparse(url)._replace(path='', query='', fragment='').geturl()
 
