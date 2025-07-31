@@ -1,30 +1,24 @@
 import os
 import datetime
 import psycopg2
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from dotenv import load_dotenv
 from urllib.parse import urlparse
-import validators
-from flask import abort
+from validators import url as validate_url
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
+import requests
 
 load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
-
 DATABASE_URL = os.getenv('DATABASE_URL')
-
 
 def get_connection():
     return psycopg2.connect(DATABASE_URL)
 
-
 def is_valid_url(url):
-    parsed = urlparse(url)
-    return all([parsed.scheme in ('http', 'https'), parsed.netloc])
-
+    return validate_url(url)
 
 @app.route('/')
 def index():
@@ -33,11 +27,10 @@ def index():
 @app.post('/urls')
 def add_url():
     url = request.form.get('url', '').strip()
-    
+
     if not is_valid_url(url):
         flash('Некорректный URL', 'danger')
-        return redirect(url_for('index')), 422
-
+        return render_template('index.html'), 422
 
     normalized = urlparse(url)._replace(path='', query='', fragment='').geturl()
 
@@ -55,7 +48,6 @@ def add_url():
             flash('Страница успешно добавлена', 'success')
             return redirect(url_for('show_url', id=id_))
 
-
 @app.route('/urls')
 def list_urls():
     with get_connection() as conn:
@@ -71,7 +63,6 @@ def list_urls():
             """)
             urls = cur.fetchall()
     return render_template('urls/index.html', urls=urls)
-
 
 @app.route('/urls/<int:id>')
 def show_url(id):
@@ -90,14 +81,10 @@ def show_url(id):
 
     return render_template('urls/show.html', url=url, checks=checks)
 
-
-import requests
-
 @app.post('/urls/<int:id>/checks')
 def run_check(id):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            # Проверка существования URL
             cur.execute("SELECT name FROM urls WHERE id = %s", (id,))
             row = cur.fetchone()
             if not row:
