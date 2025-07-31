@@ -4,8 +4,22 @@
   <div class="container-lg mt-5">
     <div class="row justify-content-center">
       <div class="col-12 col-md-10 col-lg-8 mx-auto">
-        <h1 class="display-3 mb-5 text-center">Анализатор страниц</h1>
+        <h1 class="display-3 mb-3 text-center">Анализатор страниц</h1>
         <p class="lead text-center">Бесплатно проверяйте сайты на SEO-пригодность</p>
+
+        <!-- 🔔 Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mt-4">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }} text-center" role="alert">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
         <form method="post" action="{{ url_for('add_url') }}" class="d-flex justify-content-center">
           <input type="text" name="url" class="form-control form-control-lg" placeholder="https://www.example.com">
           <input type="submit" value="Проверить" class="btn btn-primary btn-lg ms-3 px-5 text-uppercase">
