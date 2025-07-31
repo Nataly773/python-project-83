@@ -1,14 +1,17 @@
 import os
 import datetime
-import psycopg2
-from flask import Flask, render_template, request 
-from flask import redirect, url_for, flash, abort
-from dotenv import load_dotenv
 from urllib.parse import urlparse
-from validators import url as validate_url
-from bs4 import BeautifulSoup
+
+import psycopg2
 import requests
- 
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from flask import (
+    Flask, render_template, request,
+    redirect, url_for, flash, abort
+)
+from validators import url as validate_url
+
 
 load_dotenv()
 
@@ -39,18 +42,27 @@ def add_url():
         flash('Некорректный URL', 'danger')
         return render_template('index.html'), 422
 
-    normalized = urlparse(url)._replace(path='', query='', fragment='').geturl()
+    normalized = urlparse(url)._replace(
+        path='', query='', fragment=''
+    ).geturl()
 
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id FROM urls WHERE name = %s", (normalized,))
+            cur.execute(
+                "SELECT id FROM urls WHERE name = %s", (normalized,)
+            )
             existing = cur.fetchone()
             if existing:
                 flash('Страница уже существует', 'info')
-                return redirect(url_for('show_url', id=existing[0]))
+                return redirect(
+                    url_for('show_url', id=existing[0])
+                )
 
-            cur.execute("INSERT INTO urls (name, created_at) VALUES (%s, %s) RETURNING id",
-                        (normalized, datetime.datetime.now()))
+            cur.execute(
+                "INSERT INTO urls (name, created_at) "
+                "VALUES (%s, %s) RETURNING id",
+                (normalized, datetime.datetime.now())
+            )
             id_ = cur.fetchone()[0]
             flash('Страница успешно добавлена', 'success')
             return redirect(url_for('show_url', id=id_))
@@ -70,6 +82,7 @@ def list_urls():
                 ORDER BY urls.id DESC
             """)
             urls = cur.fetchall()
+
     return render_template('urls/index.html', urls=urls)
 
 
@@ -77,13 +90,18 @@ def list_urls():
 def show_url(id):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT id, name, created_at FROM urls WHERE id = %s", (id,))
+            cur.execute(
+                "SELECT id, name, created_at FROM urls "
+                "WHERE id = %s",
+                (id,)
+            )
             url = cur.fetchone()
             if not url:
                 abort(404)
 
             cur.execute(
-                "SELECT * FROM url_checks WHERE url_id = %s ORDER BY id DESC",
+                "SELECT * FROM url_checks "
+                "WHERE url_id = %s ORDER BY id DESC",
                 (id,)
             )
             checks = cur.fetchall()
@@ -95,7 +113,9 @@ def show_url(id):
 def run_check(id):
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT name FROM urls WHERE id = %s", (id,))
+            cur.execute(
+                "SELECT name FROM urls WHERE id = %s", (id,)
+            )
             row = cur.fetchone()
             if not row:
                 abort(404)
@@ -114,12 +134,20 @@ def run_check(id):
 
                 h1_text = h1.get_text(strip=True) if h1 else None
                 title_text = title.get_text(strip=True) if title else None
-                description = meta['content'].strip() if meta and meta.get('content') else None
+                description = (
+                    meta['content'].strip()
+                    if meta and meta.get('content') else None
+                )
 
-                cur.execute("""
-                    INSERT INTO url_checks (url_id, status_code, h1, title, description, created_at)
-                    VALUES (%s, %s, %s, %s, %s, %s)
-                """, (id, status_code, h1_text, title_text, description, datetime.datetime.now()))
+                cur.execute(
+                    "INSERT INTO url_checks (url_id, status_code, h1, title, "
+                    "description, created_at) VALUES (%s, %s, %s, %s, %s, %s)",
+                    (
+                        id, status_code, h1_text,
+                        title_text, description,
+                        datetime.datetime.now()
+                    )
+                )
 
                 flash('Страница успешно проверена', 'success')
 
