@@ -36,7 +36,7 @@ def add_url():
     
     if not is_valid_url(url):
         flash('Некорректный URL', 'danger')
-        return redirect(url_for('index'))
+        return redirect(url_for('index')), 422
 
 
     normalized = urlparse(url)._replace(path='', query='', fragment='').geturl()

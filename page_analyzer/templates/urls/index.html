@@ -20,8 +20,8 @@
         <th>ID</th>
         <th>Имя</th>
         <th>Дата создания</th>
+        <th>Код ответа</th> <!-- Перемещено сюда -->
         <th>Последняя проверка</th>
-        <th>Код ответа</th>
       </tr>
     </thead>
     <tbody>
@@ -30,8 +30,8 @@
           <td>{{ id }}</td>
           <td><a href="{{ url_for('show_url', id=id) }}">{{ name }}</a></td>
           <td>{{ created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td>{{ status_code if status_code else '' }}</td> <!-- Перемещено сюда -->
           <td>{{ last_check.strftime('%Y-%m-%d %H:%M') if last_check else '' }}</td>
-          <td>{{ status_code if status_code else '' }}</td>
         </tr>
       {% endfor %}
     </tbody>
