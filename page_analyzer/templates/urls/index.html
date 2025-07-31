@@ -2,7 +2,6 @@
 {% block content %}
 <div class="container mt-4">
 
-  <!-- 🔔 Flash messages -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
@@ -20,7 +19,7 @@
         <th>ID</th>
         <th>Имя</th>
         <th>Дата создания</th>
-        <th>Код ответа</th> <!-- Перемещено сюда -->
+        <th>Код ответа</th> 
         <th>Последняя проверка</th>
       </tr>
     </thead>
@@ -30,7 +29,7 @@
           <td>{{ id }}</td>
           <td><a href="{{ url_for('show_url', id=id) }}">{{ name }}</a></td>
           <td>{{ created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-          <td>{{ status_code if status_code else '' }}</td> <!-- Перемещено сюда -->
+          <td>{{ status_code if status_code else '' }}</td> 
           <td>{{ last_check.strftime('%Y-%m-%d %H:%M') if last_check else '' }}</td>
         </tr>
       {% endfor %}
