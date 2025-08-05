@@ -1,5 +1,6 @@
 [project]
 name = "hexlet-code"
+python = "^3.12"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
