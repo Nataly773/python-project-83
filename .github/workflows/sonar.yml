@@ -33,7 +33,7 @@ jobs:
           uv run pytest --cov=./ --cov-report=xml
 
       - name: SonarCloud Scan
-        uses: uses: sonarsource/sonarcloud-github-action@v1
+        uses: sonarsource/sonarcloud-github-action@v1
         with:
           projectKey: python-project-83
           scannerMode: 'cli'
