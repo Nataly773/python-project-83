@@ -1,15 +1,15 @@
 [project]
 name = "hexlet-code"
-python = "^3.12"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
+python = "^3.12"
 dependencies = [
- "flask",
- "gunicorn", 
- "psycopg2-binary>=2.9.6",
- "python-dotenv",
+  "flask",
+  "gunicorn",
+  "psycopg2-binary>=2.9.6",
+  "python-dotenv",
   "validators",
   "requests",
   "beautifulsoup4"
- ]
+]
