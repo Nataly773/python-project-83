@@ -40,4 +40,4 @@ jobs:
           extraArgs: >
             -Dsonar.python.coverage.reportPaths=coverage.xml
         env:
-          SONAR_TOKEN: ${{ 260276977ac39e2077edd8ffec27fe368aa64526 }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN  }}
