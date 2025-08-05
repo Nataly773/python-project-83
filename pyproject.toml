@@ -14,5 +14,3 @@ dependencies = [
   "beautifulsoup4"
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
