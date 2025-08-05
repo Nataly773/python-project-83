@@ -1,8 +1,6 @@
 [project]
 name = "hexlet-code"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
 requires-python = ">=3.8,<4.0"
 dependencies = [
   "flask",
@@ -14,3 +12,6 @@ dependencies = [
   "beautifulsoup4"
 ]
 
+[tool.setuptools.packages.find]
+where = ["page_analyzer"]
+include = ["page_analyzer*"]
