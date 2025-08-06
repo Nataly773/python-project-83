@@ -1,0 +1,54 @@
+name: Python CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install uv pytest pytest-cov ruff
+          uv sync
+
+      - name: Run linter and tests
+        run: |
+          make check
+
+      - name: Run test coverage
+        run: |
+          make test-coverage
+
+      - name: Show coverage report
+        run: |
+          echo "=== Coverage file location ==="
+          find . -name "coverage.xml"
+          echo "=== Preview of coverage.xml ==="
+          head -n 50 coverage.xml || echo "coverage.xml not found or empty"
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectKey: Nataly773_python-project-83
+          organization: nataly773
+          scannerMode: cli
+          configMode: manual
+          cliOptions: >
+            -Dsonar.projectKey=Nataly773_python-project-502
+            -Dsonar.organization=nataly773
+            -Dsonar.sources=page_analyzer
+            -Dsonar.exclusions=**/tests/**
+            -Dsonar.python.coverage.reportPaths=coverage.xml
