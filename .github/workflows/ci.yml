@@ -28,6 +28,6 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install pytest pytest-cov pyyaml ruff
-          uv sync --no-root
+          uv sync 
       - name: Run linter
         run: uv run ruff check .
