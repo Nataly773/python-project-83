@@ -1,10 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
 
+
 def fetch_url(url: str, timeout=5):
     response = requests.get(url, timeout=timeout)
     response.raise_for_status()
     return response
+
 
 def parse_html(html: str):
     soup = BeautifulSoup(html, 'html.parser')
