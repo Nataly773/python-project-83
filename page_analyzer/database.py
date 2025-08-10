@@ -64,18 +64,21 @@ def get_url_checks(url_id: int):
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                "SELECT * FROM url_checks WHERE url_id = %s ORDER BY id DESC",
+                "SELECT * FROM url_checks WHERE " \
+                "url_id = %s ORDER BY id DESC",
                 (url_id,),
             )
             return cur.fetchall()
 
 
-def insert_url_check(url_id: int, status_code: int, h1: str, title: str, description: str):
+def insert_url_check(url_id: int, status_code: int, h1: str,
+                     title: str, description: str):
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO url_checks "
                 "(url_id, status_code, h1, title, description, created_at) "
                 "VALUES (%s, %s, %s, %s, %s, %s)",
-                (url_id, status_code, h1, title, description, datetime.datetime.now()),
+                (url_id, status_code, h1, title, description, 
+                 datetime.datetime.now()),
             )
