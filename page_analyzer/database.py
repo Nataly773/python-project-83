@@ -64,7 +64,7 @@ def get_url_checks(url_id: int):
     with get_connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
-                "SELECT * FROM url_checks WHERE " \
+                "SELECT * FROM url_checks WHERE " 
                 "url_id = %s ORDER BY id DESC",
                 (url_id,),
             )

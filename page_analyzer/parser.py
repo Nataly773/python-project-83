@@ -17,5 +17,6 @@ def parse_html(html: str):
     return {
         'h1': h1.get_text(strip=True) if h1 else None,
         'title': title.get_text(strip=True) if title else None,
-        'description': meta['content'].strip() if meta and meta.get('content') else None,
+        'description': meta['content'].strip() 
+        if meta and meta.get('content') else None,
     }
